@@ -7,49 +7,49 @@ import {StyleSheet,Text,View,TouchableOpacity} from 'react-native';
 
 export default class Swatch extends Component{
 
-	renderNormalMode(){
-		return (
-			<View style={[styles.box,{backgroundColor: this.props.color}]} >
-			</View>
-		);
-	}
+  renderNormalMode(){
+    return (
+      <View style={[styles.box,{backgroundColor: this.props.color}]} >
+      </View>
+    );
+  }
 
-	renderDevMode(){
-		return (
-			<TouchableOpacity 
-				onPress={this.props.resetGame}
-				style={[styles.box,{backgroundColor: this.props.color}]} >
-				<Text style={[styles.dev,{fontSize:12,marginBottom:15}]}>
-					{DEV_TEXT}
-				</Text>
-				<Text style={styles.dev}>
-					{this.props.color}
-				</Text>
-			</TouchableOpacity>
-		);
-	}
+  renderDevMode(){
+    return (
+      <TouchableOpacity 
+        onPress={this.props.resetGame}
+        style={[styles.box,{backgroundColor: this.props.color}]} >
+        <Text style={[styles.dev,{fontSize:12,marginBottom:15}]}>
+          {DEV_TEXT}
+        </Text>
+        <Text style={styles.dev}>
+          {this.props.color}
+        </Text>
+      </TouchableOpacity>
+    );
+  }
 
-	render() {
-		if(this.props.mode==1) return(this.renderDevMode());
-		else return(this.renderNormalMode());
-	}
+  render() {
+    if(this.props.mode==1) return(this.renderDevMode());
+    else return(this.renderNormalMode());
+  }
 }
 
 const styles = StyleSheet.create({
-	box: {
-		width: 200,
-		height: 200,
-		margin: 10,
-		justifyContent: 'center',
-		alignItems: 'center',
-	},
-	dev: {
-		fontSize: 18,
-		fontFamily:'Menlo',
-		color: "#fff",
-		backgroundColor: "#000",
-		paddingLeft:5, paddingRight:5,
-	}
+  box: {
+    width: 200,
+    height: 200,
+    margin: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dev: {
+    fontSize: 18,
+    fontFamily:'Menlo',
+    color: "#fff",
+    backgroundColor: "#000",
+    paddingLeft:5, paddingRight:5,
+  }
 });
 
 
