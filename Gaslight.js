@@ -26,14 +26,8 @@ export default class Gaslight extends Component{
   constructor(props){
     super(props);
     this.state = {
-      depth: this.invert(this.props.wedgeSize),
-      sliding: false,
+      depth: this.invert(this.props.wedgeSize)
     }
-  }
-
-  slidingComplete(x){
-    this.setState({sliding: false});
-    this.props.wedgeChanged(x);
   }
 
   renderTesters(){
@@ -70,8 +64,8 @@ export default class Gaslight extends Component{
           maximumValue = {minWedgeSize+rangeWedgeSizes}
           value = {this.state.depth}
           step = {1}
-          onValueChange = {(x) => this.setState({depth: x, sliding:true})}
-          onSlidingComplete = {(x)=>this.slidingComplete(x)}
+          onValueChange = {(x) => this.setState({depth: x})}
+          onSlidingComplete = {this.props.wedgeChanged}
           minimumTrackTintColor = {trackColor.left}
           maximumTrackTintColor = {trackColor.right}
         />
