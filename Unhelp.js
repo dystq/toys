@@ -5,6 +5,7 @@ import {StyleSheet,Text,View} from 'react-native';
 import Inkpot from './Inkpot'
 import Lightwell from './Lightwell'
 import Chatterbox from './Chatterbox'
+import Gaslight from './Gaslight'
 import * as Util from './utilities'
 
 // "Tutorial" and other funhelpful things (: (:
@@ -137,6 +138,18 @@ export default class Unhelp extends Component{
       />);
   }
 
+    renderGaslight(){
+    return(<View style={[styles.gaslight]}><Gaslight 
+      wedgeSize = {this.props.footWedgeSize}
+      minWedgeSize = {3}
+      rangeWedgeSizes = {29}
+      showValue = {false}
+      showTesters = {true}
+      wedgeChanged = {()=>{return null}} />
+      </View>
+      );
+  }
+
 
   render() {
     return(
@@ -152,12 +165,17 @@ export default class Unhelp extends Component{
           {this.renderLightwell(1)}
           {this.renderLightwell(2)}
         </View>
+        {this.renderGaslight()}
       </View>
       );
   }
 }
 
 const styles = StyleSheet.create({
+    gaslight: {
+    position: 'absolute',
+    bottom: 50,
+  },
   palette: {
     width: 200,
     flexDirection: 'row',
@@ -168,6 +186,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   slider: {
     width: 200,

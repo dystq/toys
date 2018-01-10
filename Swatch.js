@@ -13,8 +13,12 @@ import * as Util from './utilities'
 // Channels: {[r,g,b] | 0<=r,g,b<=255}
 // Context: {blank, win, tutorial, devel_game, devel_side, black, white, delia}
 // onPress()
+//
+// OPtionally:
 // WhiteIndex
 // DeliaIndex
+// results
+// optimal
 
 
 export default class Swatch extends Component{
@@ -23,7 +27,7 @@ export default class Swatch extends Component{
     const {context, whiteIndex, deliaIndex} = this.props;
     if(context == "white") return textForWhiteIndex[whiteIndex];
     else if(context == "delia") return textForDeliaIndex[deliaIndex];
-    else return textForContext[context];
+    else return staticTextForContext[context];
   }
 
   renderOptional(){
@@ -37,7 +41,7 @@ export default class Swatch extends Component{
 
   renderInsides(){
     const {context} = this.props;
-    if(!textForContext[context]) return null;
+    if(!staticTextForContext[context]) return null;
     else return(
       <Text style = {styles[labelStyleForContext[context]]}>
         {this.getText()}
@@ -125,9 +129,8 @@ const labelStyleForContext = {
   delia: "blackSheerLabel"
 }
 
-const textForContext = {
+const staticTextForContext = {
   blank: null,
-  win: null,
   tutorial: "the goal is to\nremove the box",
   devel_game: "tHiS iS dEv MoDe!!\ntap for new colors\nreturn to _______\\\ngame mode        /",
   devel_side: " ---------------- \n \\  WELCOME TO  /\n /  DEVEL MODE  \\\n ---------------- \n tap to return to \n   regular mode   ",

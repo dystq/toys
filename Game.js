@@ -7,6 +7,9 @@ import Gaslight from './Gaslight'
 import Inkpot from './Inkpot'
 import Lightwell from './Lightwell'
 import Swatch from './Swatch'
+import Inkled from './Inkled'
+
+// 
 
 export default class Game extends Component{
 
@@ -131,31 +134,37 @@ export default class Game extends Component{
 
   renderGaslight(){
     if(this.props.mode==1) return(<View style={[styles.gaslight]}><Gaslight 
-      initial = {this.props.footWedgeSize} 
-      footWedgeSize = {this.props.footWedgeSize}
-      adjustWedge = {(n) => this.props.adjustWedge(n)} /></View>
+      wedgeSize = {this.props.footWedgeSize}
+      minWedgeSize = {3}
+      rangeWedgeSizes = {29}
+      showValue = {true}
+      showTesters = {true}
+      wedgeChanged = {(n) => this.props.adjustWedge(n)} />
+      </View>
       );
   }
 
-  renderInkpot(n){
+  renderInkpot(n,c){
     return (
-      <Inkpot 
-      hue={n} 
-      remaining={this.state.currentRgb[n]} 
-      step={this.props.stepSize} 
-      addInk={() => this.addInk(n)} 
-      mode={this.props.mode}
+      <Inkled 
+      channel={c} 
+      magnitude={this.state.currentRgb[n]} 
+      system={"subtractive"}
+      text="power"
+      mode="power"
+      onPress={() => this.addInk(n)} 
       />);
   }
 
-  renderLightwell(n){
+  renderLightwell(n,c){
     return (
-      <Lightwell 
-      hue={n} 
-      remaining={255-this.state.currentRgb[n]} 
-      step={this.props.stepSize} 
-      addLight={() => this.addLight(n)} 
-      mode={this.props.mode}
+      <Inkled 
+      channel={c} 
+      magnitude={255-this.state.currentRgb[n]} 
+      system={"additive"}
+      text="power"
+      mode="power"
+      onPress={() => this.addLight(n)} 
       />);
   }
 
@@ -163,18 +172,19 @@ export default class Game extends Component{
     return(
       <View style={[styles.container]}>
         <View style={styles.palette}>
-          {this.renderInkpot(0)}
-          {this.renderInkpot(1)}
-          {this.renderInkpot(2)}
+          {this.renderInkpot(0,"red")}
+          {this.renderInkpot(1,"green")}
+          {this.renderInkpot(2,"blue")}
         </View>
         <Swatch 
-          color={this.state.currentColor} 
+          channels={this.state.currentRgb}
+          context="devel_side" 
           resetGame={()=>this.resetGame()} 
           mode={this.props.mode}/>
         <View style={styles.palette}>
-          {this.renderLightwell(0)}
-          {this.renderLightwell(1)}
-          {this.renderLightwell(2)}
+          {this.renderLightwell(0,"red")}
+          {this.renderLightwell(1,"green")}
+          {this.renderLightwell(2,"blue")}
         </View>
       </View>
       );
@@ -195,7 +205,6 @@ const styles = StyleSheet.create({
   gaslight: {
     position: 'absolute',
     bottom: 50,
-    backgroundColor: "#fff"
   },
   container: {
     flex: 1,

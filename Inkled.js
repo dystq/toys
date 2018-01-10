@@ -23,8 +23,8 @@ export default class Inkled extends Component{
 
   getRGBA(){
     const {channel, system, magnitude, mode} = this.props;
-    let color = new Array(3).fill(identityInSystem[system]);
-    color[indexOfChannel[channel]] = mapToValue[mode](system,magnitude);
+    let color = new Array(3).fill(Util.identityInSystem[system]);
+    color[Util.indexOfChannel[channel]] = mapToValue[mode](system,magnitude);
     const alpha = magnitude == 0 ? alphaOf[mode] : alphaOf.enabled;
     return Util.convertFrom.channelsTo.RGBA(color,alpha);
   }
@@ -42,7 +42,7 @@ export default class Inkled extends Component{
     const {text} = this.props;
     if(text=="title"){
       const {system} = this.props;
-      const identity = new Array(3).fill(255-identityInSystem[system]);
+      const identity = new Array(3).fill(255-Util.identityInSystem[system]);
       const color = Util.convertFrom.channelsTo.RGB(identity);
       return([styles.title, {color: color}]);
     }
@@ -109,26 +109,10 @@ const alphaOf = {
   enabled: 1
 }
 
-const indexOfChannel = {
-  red: 0,
-  green: 1,
-  blue: 2
-}
-
-const identityInSystem = {
-  additive: 0,
-  subtractive: 255
-}
-
-const mapToAdditiveFromSystem = {
-  additive: (x)=>(x),
-  subtractive: (x)=>(255-x)
-}
-
 const mapToValue = {
-  solid: (system,magnitude)=>255-identityInSystem[system],
-  stock: (system,magnitude)=>mapToAdditiveFromSystem[system](magnitude),
-  power: (system,magnitude)=>255- mapToAdditiveFromSystem[system](magnitude)
+  solid: (system,magnitude)=>255-Util.identityInSystem[system],
+  stock: (system,magnitude)=>Util.mapToAdditiveFromSystem[system](magnitude),
+  power: (system,magnitude)=>255-Util.mapToAdditiveFromSystem[system](magnitude)
 }
 
 const titleForChannel = {
