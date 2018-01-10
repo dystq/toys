@@ -21,6 +21,7 @@ export default class Unhelp extends Component{
       blackCode: "", 
       whiteCode: "",
       subMode: 0,
+
     }
   }
 

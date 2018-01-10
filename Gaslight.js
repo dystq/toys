@@ -12,7 +12,7 @@ export default class Gaslight extends Component{
   constructor(props){
     super(props);
     this.state={
-      slider: this.props.initial,
+      slider: 35-this.props.initial,
     }
   }
 

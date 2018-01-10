@@ -8,7 +8,12 @@ export default class Won extends Component{
   render() {
     return(
       <TouchableOpacity onPress = {this.props.exitWin} style={styles.container}>
-      <Text>You've won.</Text>
+      <Text>GOAL REACHED
+      {"\n"}  Steps: {this.props.numSteps}
+      {"\n"}Optimal: {this.props.numOptimal}
+			{"\n"}  Stuff: {this.props.stuff}
+      </Text>
+
       </TouchableOpacity>
       );
   }

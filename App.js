@@ -18,17 +18,18 @@ export default class App extends Component<{}> {
       stepSize: (FOOT_WEDGE_DEFAULT-3)*2, 
       footWedgeSize: FOOT_WEDGE_DEFAULT, 
       mode: 1,
-
+      numSteps: 0,
+      numOptimal: 0,
+      stuff: [],
     };
   }
 
   adjustWedge(n){ 
-    const convert = MIN_RESOLVE + MAX_RESOLVE - n; //hack because
-    const newStepSize = convert*2-4;
+    const wedge = Util.slider2Wedge(n);
+    const step = Util.wedge2Step(wedge);
     this.setState({
-      stepSize: newStepSize,
-      footWedgeSize: convert,
-
+      stepSize: step,
+      footWedgeSize: wedge,
     });
   }
 
@@ -36,8 +37,13 @@ export default class App extends Component<{}> {
     this.setState({isNoob:false});
   }
 
-  handleWin(){
-    this.setState({seeWin: true})
+  handleWin(stuff){
+    this.setState({
+      seeWin: true,
+      numSteps: stuff.length-4,
+      numOptimal: stuff[0]+stuff[1]+stuff[2],
+      stuff: stuff,
+    });
   }
 
   enableDevMode(){
@@ -54,13 +60,18 @@ export default class App extends Component<{}> {
 
   renderMain(seeWin){
     if(seeWin) 
-      return(<Won exitWin = {()=>this.exitWin()}/>);
+      return(<Won 
+        exitWin = {()=>this.exitWin()}
+        numSteps = {this.state.numSteps}
+        numOptimal = {this.state.numOptimal}
+        stuff = {this.state.stuff}
+        />);
     else
       return(<Game 
         stepSize = {this.state.stepSize} 
         footWedgeSize = {this.state.footWedgeSize} 
         adjustWedge={(n)=>this.adjustWedge(n)}
-        handleWin = {() => this.handleWin()}
+        handleWin = {(stuff) => this.handleWin(stuff)}
         mode = {this.state.mode}
         wedgeConst = {MIN_RESOLVE+MAX_RESOLVE}
         />);
@@ -110,7 +121,7 @@ const SCREEN_HEIGHT = Dimensions.get('window').height;
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const ALPHA = 0.85; //for winscreen
 const MIN_STEPS_TO_WIN = 4;
-const FOOT_WEDGE_DEFAULT = 60; //Should be 10
+const FOOT_WEDGE_DEFAULT = 10; //Should be 10
 const MODES = ["basic", "developer"] 
 const MIN_RESOLVE = 3; //Probably shouldn't change these
 const MAX_RESOLVE = 32; //without updating Gaslight :()
