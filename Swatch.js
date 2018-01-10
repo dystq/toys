@@ -26,13 +26,23 @@ export default class Swatch extends Component{
     else return textForContext[context];
   }
 
+  renderOptional(){
+    const {context} = this.props;
+    if (context=="tutorial") return(
+      <Text style={[styles[labelStyleForContext["tutorial"]],styles.optionalLabel]}>
+          {optionalTextForContext[context]}
+      </Text>
+      )
+  }
+
   renderInsides(){
-    if(!textForContext[this.props.context]) return null;
+    const {context} = this.props;
+    if(!textForContext[context]) return null;
     else return(
-      <Text style = {styles.label}>
+      <Text style = {styles[labelStyleForContext[context]]}>
         {this.getText()}
       </Text>
-      );
+    );
   }
 
   renderSquare(){
@@ -44,12 +54,14 @@ export default class Swatch extends Component{
         <TouchableOpacity 
           style = {style} 
           onPress = {onPress}>
+            {this.renderOptional()}
             {this.renderInsides()}
         </TouchableOpacity>
         );
     else 
       return(
         <View style = {style}>
+          {this.renderOptional()}
           {this.renderInsides()}
         </View>
       );
@@ -70,12 +82,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  label: {
+  blackSheerLabel: {
+    color: "rgb(255,255,255)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     fontSize: 12,
     fontFamily:'Menlo',
-    color: "#fff",
-    backgroundColor: "#000",
     paddingLeft:5, paddingRight:5,
+  },
+  pressLabel: {
+    color: "rgb(0,0,0)",
+    fontSize: 14,
+    fontFamily:'Menlo'
+  },
+  chalkLabel: {
+    color: "rgb(255,255,255)",
+    fontSize: 14,
+    fontFamily:'Menlo'
+  },
+  optionalLabel: {
+    position:"absolute",top:3,left:3
   }
 });
 
@@ -90,6 +115,16 @@ const componentForContext = {
   delia: "touchableOpacity"
 }
 
+const labelStyleForContext = {
+  win: "pressLabel",
+  tutorial: "pressLabel",
+  devel_game: "blackSheerLabel",
+  devel_side: "blackSheerLabel",
+  black: "chalkLabel",
+  white: "pressLabel",
+  delia: "blackSheerLabel"
+}
+
 const textForContext = {
   blank: null,
   win: null,
@@ -97,6 +132,10 @@ const textForContext = {
   devel_game: "tHiS iS dEv MoDe!!\ntap for new colors\nreturn to _______\\\ngame mode        /",
   devel_side: " ---------------- \n \\  WELCOME TO  /\n /  DEVEL MODE  \\\n ---------------- \n tap to return to \n   regular mode   ",
   black: ">:)"
+}
+
+const optionalTextForContext = {
+  tutorial: "tutorial"
 }
 
 const textForWhiteIndex = [

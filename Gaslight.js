@@ -3,91 +3,109 @@
 import React, { Component } from 'react';
 import {StyleSheet,Text,View,Slider} from 'react-native';
 import * as Util from './utilities'
-import Swab from './Swab'
 
-// What is normally called a settings panel is called a gaslight here
+// What is normally called a settings panel 
+// is called a gaslight here
+//
+// It converts wedge-size into color depth
+// and renders a slider for the user to
+// change the color depth and accordingly
+// the wedge size.
+//
+// It needs some things to do its job:
+// minWedgeSize, rangeWedgeSize, wedgeSize
+// showValue, showTesters
+// wedgeChanged()
 
 export default class Gaslight extends Component{
 
+  invert(value){
+    return 2*this.props.minWedgeSize+this.props.rangeWedgeSizes - value;
+  }
+
   constructor(props){
     super(props);
-    this.state={
-      slider: 35-this.props.initial,
+    this.state = {
+      depth: this.invert(this.props.wedgeSize),
+      sliding: false,
     }
   }
 
-  adjusting(x){
-    this.setState({
-      slider: x,
-    })
+  slidingComplete(x){
+    this.setState({sliding: false});
+    this.props.wedgeChanged(x);
   }
 
-  renderSwab(x){
-    return(<Swab 
-      greyBase = {BASE_GREY}
-      tindex = {x}
-      amount = {MIN_RESOLVE+MAX_RESOLVE-this.state.slider}
-      />);
-  }
-
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.dev}>
-          {MIN_RESOLVE+MAX_RESOLVE-this.state.slider} levels
-        </Text>
-        <Slider style = {styles.slider}
-          minimumValue = {MIN_RESOLVE} 
-          maximumValue = {MAX_RESOLVE}
-          minimumTrackTintColor = "#000"
-          thumbTintColor = "#F00"
-          value = {this.state.slider}
-          step = {1}
-          onValueChange = {(x) => this.adjusting(x)}
-          onSlidingComplete = {this.props.adjustWedge}
-        />
-        <View style={styles.testerRow}>     
-          {this.renderSwab(4)}
-          {this.renderSwab(5)}
-          {this.renderSwab(3)}
+  renderTesters(){
+    const tintUpColor = new Array(3).fill(baseGreyValue);
+    const tintDownColor = new Array(3).fill(baseGreyValue);
+    const tintAmount = Math.floor(this.invert(this.state.depth)/2);
+    tintUpColor[Util.indexOfChannel[humansWeakestChannel]] += tintAmount;
+    tintDownColor[Util.indexOfChannel[humansWeakestChannel]] -= tintAmount;
+    return(
+      <View>
+        <View style = {[styles.tester,{backgroundColor: Util.convertFrom.channelsTo.RGB(tintUpColor)}]}>
+          <Text style = {[styles.text]}>{testerText[0]}</Text>
         </View>
-        <View style={styles.testerRow}>     
-          {this.renderSwab(0)}
-          {this.renderSwab(1)}
-          {this.renderSwab(2)}
+        <View style = {[styles.tester,{backgroundColor: Util.convertFrom.channelsTo.RGB(tintDownColor)}]}>
+          <Text style = {[styles.text]}>{testerText[1]}</Text>
         </View>
       </View>
-      );}
+    );
+  }
+
+  renderValue(){
+    return(<Text style = {styles.text}>{this.invert(this.state.depth)}</Text>)
+  }
+
+  render() {
+    const {minWedgeSize, rangeWedgeSizes, showValue, showTesters} = this.props;
+    const {depth} = this.state;
+    return (
+      <View style = {styles.container}>
+        {showTesters && this.renderTesters()}
+        {showValue && this.renderValue()}
+        <Slider style = {styles.slider}
+          minimumValue = {minWedgeSize} 
+          maximumValue = {minWedgeSize+rangeWedgeSizes}
+          value = {this.state.depth}
+          step = {1}
+          onValueChange = {(x) => this.setState({depth: x, sliding:true})}
+          onSlidingComplete = {(x)=>this.slidingComplete(x)}
+          minimumTrackTintColor = {trackColor.left}
+          maximumTrackTintColor = {trackColor.right}
+        />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   text: {
     fontFamily: 'Menlo',
-    fontSize: 14, 
-  },
-    dev: {
-    fontSize: 12,
-    fontFamily:'Menlo',
-    color: "#fff",
-    backgroundColor: "#000",
-    paddingLeft:5, paddingRight:5,
+    fontSize: 12, 
   },
   slider: {
     width: 200,
   },
+  tester: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200, height: 20,
+  },
   container:{
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  testerRow:{
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
   },
 });
 
-const BASE_GREY = 180;
-const MIN_RESOLVE = 3;  
-const MAX_RESOLVE = 32;
-
+const baseGreyValue = 180;
+const humansWeakestChannel = "red";
+const testerText = [
+  "keep us distinguishable", 
+  "but only just barely so"];
+const trackColor = {
+  left: "rgb(0,0,0)",
+  right: "rgb(180,180,180)"
+};
